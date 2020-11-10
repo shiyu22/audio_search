@@ -12,7 +12,7 @@ def do_search_audio(index_client, conn, cursor, table_name, filename):
 
     vectors_audio = get_audio_embedding(filename)
 
-    results = search_vectors(index_client, table_name, vectors_audio, METRIC_TYPE, TOP_K)
+    results = search_vectors(index_client, table_name, [vectors_audio], METRIC_TYPE, TOP_K)
 
     re_ids_img = []
     milvus_ids = [x.id for x in results[0]]

@@ -64,7 +64,7 @@ def search_vectors(client, table_name, vectors, metric, top_k):
             "must": [
                 {
                     "vector": {
-                        "embedding": {"topk": 3, "query": vectors, "metric_type": metric}
+                        "embedding": {"topk": top_k, "query": vectors, "metric_type": metric}
                     }
                 }
             ]
