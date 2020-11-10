@@ -14,14 +14,10 @@ def do_search_audio(index_client, conn, cursor, table_name, filename):
     print(vectors_audio)
 
     results = search_vectors(index_client, table_name, [vectors_audio], METRIC_TYPE, TOP_K)
-    print("----------", results)
 
     re_ids_img = []
     milvus_ids = [x.id for x in results[0]]
-    print("-----milvus_ids:", milvus_ids)
     milvus_distance = [x.distance for x in results[0]]
-    print("-----milvus_distance:", milvus_distance)
     audio_ids = search_by_milvus_ids(conn, cursor, milvus_ids, table_name)
-    print("------audio_ids:", audio_ids)
 
     return milvus_ids, milvus_distance, audio_ids
