@@ -1,24 +1,22 @@
 import logging as log
-from common.config import DEFAULT_TABLE
-from indexer.index import milvus_client, search_vectors, get_vector_by_ids
-from indexer.tools import connect_mysql, search_by_milvus_ids
+from common.config import DEFAULT_TABLE, METRIC_TYPE, TOP_K
+from indexer.index import search_vectors
+from indexer.tools import search_by_milvus_ids
+from encoder.encode import get_audio_embedding
 import time
 
 
-def do_search(index_client, conn, cursor, img_to_vec, img_list, table_name):
+def do_search_logo(index_client, conn, cursor, table_name, filename):
     if not table_name:
         table_name = DEFAULT_TABLE
-    vectors_img = img_to_vec(img_list)
-    print("the num of search images:", len(vectors_img))
-    print("doing search, table_name:", table_name)
-    status, ids_milvus = search_vectors(index_client, table_name, vectors_img)
 
-    # print("distance_array:", ids_milvus.distance_array)
+    vectors_audio = get_audio_embedding(filename)
+
+    results = search_vectors(index_client, table_name, vectors_audio, METRIC_TYPE, TOP_K)
+
     re_ids_img = []
-    for ids in ids_milvus:
-        vids = [x.id for x in ids]
+    milvus_ids = [x.id for x in results[0]]
+    milvus_distance = [x.distance for x in results[0]]
+    audio_ids = search_by_milvus_ids(conn, cursor, vids, table_name)
 
-        re_ids = search_by_milvus_ids(conn, cursor, vids, table_name)
-        re_ids_img.append(re_ids)
-
-    return re_ids_img, ids_milvus.distance_array
+    return milvus_ids, milvus_distance, audio_ids
