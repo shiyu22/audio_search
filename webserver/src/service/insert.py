@@ -43,8 +43,8 @@ def do_insert_audio(index_client, conn, cursor, table_name, audio_path):
         print("load data to mysql:", file_name)
         load_data_to_mysql(conn, cursor, table_name, file_name)
 
-        return status, info
+        return "insert successfully!"
     except Exception as e:
         # log.error(e)
         write_log(e, 1)
-        return None, "Error with {}".format(e)
+        return "Error with {}".format(e)
