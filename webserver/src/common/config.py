@@ -7,6 +7,7 @@ VECTOR_DIMENSION = os.getenv("VECTOR_DIMENSION", 2048)
 METRIC_TYPE = os.getenv("METRIC_TYPE", "IP")
 TOP_K = os.getenv("TOP_K", 100)
 
+UPLOAD_PATH = os.getenv("UPLOAD_PATH", "./tmp")
 DEFAULT_TABLE = os.getenv("DEFAULT_TABLE", "milvus_audio")
 
 MYSQL_HOST = os.getenv("MYSQL_HOST", "127.0.0.1")
