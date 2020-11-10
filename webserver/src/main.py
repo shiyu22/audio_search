@@ -1,10 +1,9 @@
 import os
 import logging
 from service.insert import do_insert_audio
-from service.search import do_search_logo, do_search_face, do_only_her
+from service.search import do_search_audio
 from service.count import do_count_table
 from service.delete import do_delete_table
-from service.format import format_info
 from indexer.index import milvus_client
 from indexer.tools import connect_mysql
 from common.config import UPLOAD_PATH
@@ -88,7 +87,7 @@ async def do_search_audio_api(request: Request, audio: UploadFile = File(...), t
 
         index_client, conn, cursor = init_conn()
         host = request.headers['host']
-        milvus_ids, milvus_distance, audio_ids = do_search_logo(index_client, conn, cursor, table_name, filename)
+        milvus_ids, milvus_distance, audio_ids = do_search_audio(index_client, conn, cursor, table_name, filename)
         
         result_dic = {"code": 0, "msg": "success"}
         results = []

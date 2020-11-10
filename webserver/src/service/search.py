@@ -6,7 +6,7 @@ from encoder.encode import get_audio_embedding
 import time
 
 
-def do_search_logo(index_client, conn, cursor, table_name, filename):
+def do_search_audio(index_client, conn, cursor, table_name, filename):
     if not table_name:
         table_name = DEFAULT_TABLE
 

@@ -1,6 +1,6 @@
 import logging
 from milvus import Milvus, DataType
-from common.config import MILVUS_HOST, MILVUS_PORT, LOGO_DIMENSION, FACE_DIMENSION, TOP_K
+from common.config import MILVUS_HOST, MILVUS_PORT
 
 
 def milvus_client():
@@ -58,7 +58,7 @@ def delete_collection(client, table_name):
         logging.error(e)
 
 
-def search_vectors(client, table_name, vectors, metric, top_k=TOP_K):
+def search_vectors(client, table_name, vectors, metric, top_k):
     query_hybrid = {
         "bool": {
             "must": [
