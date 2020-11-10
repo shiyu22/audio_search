@@ -107,4 +107,4 @@ async def do_search_audio_api(request: Request, audio: UploadFile = File(...), t
 
 
 if __name__ == '__main__':
-    uvicorn.run(app=app, host='192.168.1.58', port=8000)
+    uvicorn.run(app=app, host='192.168.1.85', port=8002)
