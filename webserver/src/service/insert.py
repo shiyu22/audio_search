@@ -16,10 +16,10 @@ def init_table(index_client, conn, cursor, table_name):
         create_index(index_client, table_name, METRIC_TYPE)
 
 
-def get_ids_file(ids_milvus, ids_image, file_name):
+def get_ids_file(ids_milvus, ids_audio, file_name):
     with open(file_name,'w') as f:
-        for i in range(len(ids_image)):
-            line = str(ids_milvus[i]) + "," + ids_image[i] + '\n'
+        for i in range(len(ids_audio)):
+            line = str(ids_milvus[i]) + "," + ids_audio[i] + '\n'
             f.write(line)
 
 
@@ -33,13 +33,15 @@ def do_insert_audio(index_client, conn, cursor, table_name, audio_path):
         wavs.sort()
         print("-----", len(wavs), wavs)
         embeddings = []
+        ids_audio = []
         for wav in wavs:
             if ".wav" in wav:
+                ids_audio.append(wav)
                 embeddings.append(get_audio_embedding(audio_path + '/' + wav))
         ids_milvus = insert_vectors(index_client, table_name, embeddings)
         
         file_name = str(uuid.uuid1()) + ".csv"
-        get_ids_file(ids_milvus, wavs, file_name)
+        get_ids_file(ids_milvus, ids_audio, file_name)
         print("load data to mysql:", file_name)
         load_data_to_mysql(conn, cursor, table_name, file_name)
 

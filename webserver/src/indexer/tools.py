@@ -16,7 +16,7 @@ def connect_mysql():
 
 
 def create_table_mysql(conn,cursor, table_name):
-    sql = "create table if not exists " + table_name + "(milvus_id bigint, audio_id varchar(256), index ix_milvus (milvus_id));"
+    sql = "create table if not exists " + table_name + "(milvus_id bigint, audio_id text, index ix_milvus (milvus_id));"
     try:
         cursor.execute(sql)
         print("MYSQL create table.")
