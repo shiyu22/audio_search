@@ -28,7 +28,7 @@ def create_table_mysql(conn,cursor, table_name):
 def search_by_milvus_ids(conn, cursor, ids, table_name):
     str_ids = str(ids)
     str_ids = str(str_ids).replace('[','').replace(']','')
-    sql = "select images_id from " + table_name + " where audio_id in (" + str_ids + ") order by field (milvus_id," + str_ids + ");"
+    sql = "select audio_id from " + table_name + " where audio_id in (" + str_ids + ") order by field (milvus_id," + str_ids + ");"
     try:
         cursor.execute(sql)
         results = cursor.fetchall()
