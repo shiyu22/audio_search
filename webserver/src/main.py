@@ -81,7 +81,7 @@ async def do_insert_audio_api(audio_path: str, table_name: str = None):
 async def do_search_audio_api(request: Request, audio: UploadFile = File(...), table_name: str = None):
     try:
         content = await audio.read()
-        filename = UPLOAD_PATH + "/" + video.filename
+        filename = UPLOAD_PATH + "/" + audio.filename
         with open(filename, "wb") as f:
             f.write(content)
 
