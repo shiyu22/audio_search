@@ -5,7 +5,7 @@ from indexer.index import milvus_client, count_collection
 from indexer.tools import count_table
 from indexer.logs import write_log
 
-def do_count(index_client, conn, cursor, table_name):
+def do_count_table(index_client, conn, cursor, table_name):
     if not table_name:
         table_name = DEFAULT_TABLE
 
