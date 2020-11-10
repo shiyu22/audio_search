@@ -13,4 +13,4 @@ def get_audio_embedding(path):
     _, embedding = at.inference(audio)
     embedding = embedding/np.linalg.norm(embedding)
     embedding = embedding.tolist()[0]
-    return embeddings
+    return embedding

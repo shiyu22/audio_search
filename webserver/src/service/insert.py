@@ -29,8 +29,9 @@ def do_insert_audio(index_client, conn, cursor, table_name, audio_path):
     
     try:
         init_table(index_client, conn, cursor, table_name)
-        wavs = os.listdir(audio_path).sort()
-        print(wavs)
+        wavs = os.listdir(audio_path)
+        wavs.sort()
+        print("-----", len(wavs), wavs)
         embeddings = []
         for wav in wavs:
             if ".wav" in wav:
