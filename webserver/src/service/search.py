@@ -16,7 +16,10 @@ def do_search_audio(index_client, conn, cursor, table_name, filename):
 
     re_ids_img = []
     milvus_ids = [x.id for x in results[0]]
+    print("-----milvus_ids:", milvus_ids)
     milvus_distance = [x.distance for x in results[0]]
+    print("-----milvus_distance:", milvus_distance)
     audio_ids = search_by_milvus_ids(conn, cursor, vids, table_name)
+    print("------audio_ids:", audio_ids)
 
     return milvus_ids, milvus_distance, audio_ids
