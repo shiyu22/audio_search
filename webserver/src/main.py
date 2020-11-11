@@ -84,6 +84,7 @@ async def image_endpoint(audio: str):
 async def do_insert_audio_api(file: UploadFile=File(...), table_name: str = None):
     try:
         fname_path = UPLOAD_PATH + "/" + file.filename
+        print("fname_path:", fname_path)
         zip_file = await file.read()
         with open(fname_path,'wb') as f:
             f.write(zip_file)   
