@@ -36,12 +36,12 @@ def init_conn():
     return index_client, conn, cursor
 
 
-def unzip_file(zip_src):
+def unzip_file(zip_src, dst_dir):
     r = zipfile.is_zipfile(zip_src)
     if r:
         with zipfile.ZipFile(zip_src, 'r') as f:
             for fn in f.namelist():
-                extracted_path = Path(f.extract(fn))
+                extracted_path = Path(f.extract(fn, dst_dir))
                 extracted_path.rename(fn.encode('cp437').decode('gbk'))
             return f.namelist()[0].encode('cp437').decode('gbk')
     else:
@@ -84,11 +84,10 @@ async def image_endpoint(audio: str):
 async def do_insert_audio_api(file: UploadFile=File(...), table_name: str = None):
     try:
         fname_path = UPLOAD_PATH + "/" + file.filename
-        print("fname_path:", fname_path)
         zip_file = await file.read()
         with open(fname_path,'wb') as f:
             f.write(zip_file)   
-        audio_path = unzip_file(fname_path)
+        audio_path = unzip_file(fname_path, UPLOAD_PATH)
         print("fname_path:", fname_path, "audio_path:", audio_path)
         os.remove(fname_path)
 
