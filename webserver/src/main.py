@@ -117,7 +117,7 @@ async def do_search_audio_api(request: Request, audio: UploadFile = File(...), t
             re = {
                 "id": milvus_ids[i],
                 "distance": milvus_distance[i],
-                "audio": "http://" + str(host) + "/getAudio?audio=" + UPLOAD_PATH + "/" + audio_ids[i]
+                "audio": "http://" + str(host) + "/getAudio?audio=" + audio_ids[i]
             }
             results.append(re)
         result_dic["data"] = results

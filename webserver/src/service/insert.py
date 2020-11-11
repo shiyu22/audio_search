@@ -35,7 +35,7 @@ def do_insert_audio(index_client, conn, cursor, table_name, audio_path):
         ids_audio = []
         for wav in wavs:
             if ".wav" in wav:
-                ids_audio.append(wav)
+                ids_audio.append(audio_path + '/' + wav)
                 embeddings.append(get_audio_embedding(audio_path + '/' + wav))
         ids_milvus = insert_vectors(index_client, table_name, embeddings)
         
