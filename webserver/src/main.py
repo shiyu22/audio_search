@@ -14,6 +14,8 @@ from fastapi import UploadFile
 import uvicorn
 from starlette.responses import FileResponse
 from starlette.requests import Request
+import zipfile
+from pathlib import Path
 import uuid
 from starlette.middleware.cors import CORSMiddleware
 
@@ -32,6 +34,18 @@ def init_conn():
     cursor = conn.cursor()
     index_client = milvus_client()
     return index_client, conn, cursor
+
+
+def unzip_file(zip_src):
+    r = zipfile.is_zipfile(zip_src)
+    if r:
+        with zipfile.ZipFile(zip_src, 'r') as f:
+            for fn in f.namelist():
+                extracted_path = Path(f.extract(fn))
+                extracted_path.rename(fn.encode('cp437').decode('gbk'))
+            return f.namelist()[0].encode('cp437').decode('gbk')
+    else:
+        return 'This is not zip'
 
 
 @app.get('/countTable')
@@ -67,10 +81,18 @@ async def image_endpoint(audio: str):
 
 
 @app.post('/insertAudio')
-async def do_insert_audio_api(audio_path: str, table_name: str = None):
+async def do_insert_audio_api(file: UploadFile=File(...), table_name: str = None):
     try:
+        fname_path = UPLOAD_PATH + "/" + file.filename
+        zip_file = await file.read()
+        with open(fname_path,'wb') as f:
+            f.write(zip_file)   
+        audio_path = unzip_file(fname_path)
+        print("fname_path:", fname_path, "audio_path:", audio_path)
+        os.remove(fname_path)
+
         index_client, conn, cursor = init_conn()
-        info = do_insert_audio(index_client, conn, cursor, table_name, audio_path)
+        info = do_insert_audio(index_client, conn, cursor, table_name, UPLOAD_PATH + "/" + audio_path)
         return info, 200
     except Exception as e:
         logging.error(e)
