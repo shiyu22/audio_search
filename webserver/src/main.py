@@ -42,7 +42,7 @@ def unzip_file(zip_src, dst_dir):
         with zipfile.ZipFile(zip_src, 'r') as f:
             for fn in f.namelist():
                 extracted_path = Path(f.extract(fn, dst_dir))
-                extracted_path.rename(fn.encode('cp437').decode('gbk'))
+                extracted_path.rename(dst_dir +'/' + fn.encode('cp437').decode('gbk'))
             return f.namelist()[0].encode('cp437').decode('gbk')
     else:
         return 'This is not zip'
