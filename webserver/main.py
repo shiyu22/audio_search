@@ -145,7 +145,7 @@ async def do_search_audio_api(request: Request, audio: UploadFile = File(...), t
             re = {
                 "id": milvus_ids[i],
                 "distance": milvus_distance[i],
-                "audio": "http://" + str(host) + "/getAudio?audio=" + str(audio_ids[i])
+                "audio": "http://" + str(host) + "/getAudio?audio=" + str(audio_ids[i]),
                 "spectrogram": "http://" + str(host) + "/getSpectrogram?image=" + str(audio_ids[i]).replace('.wav', '.jpg')
             }
             results.append(re)
