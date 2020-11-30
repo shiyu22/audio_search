@@ -84,10 +84,10 @@ async def audio_endpoint(audio: str):
 
 
 @app.get('/getSpectrogram')
-async def audio_endpoint(image: str):
+async def spectrogram_endpoint(image: str):
     try:
-        print("load img:", audio)
-        return FileResponse(audio)
+        print("load img:", image)
+        return FileResponse(image)
     except Exception as e:
         logging.error(e)
         return {'status': False, 'msg':e}, 400
