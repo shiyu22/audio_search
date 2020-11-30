@@ -40,12 +40,9 @@ def unzip_file(zip_src, dst_dir):
     r = zipfile.is_zipfile(zip_src)
     if r:
         with zipfile.ZipFile(zip_src, 'r') as f:
-            # print("f.namelist()--------------",f.namelist())
             for fn in f.namelist():
                 extracted_path = f.extract(fn, dst_dir)
-                # extracted_path.rename(dst_dir +'/' + fn.encode('cp437').decode('gbk'))
-            # return f.namelist()[0].encode('cp437').decode('gbk')
-           	print("--------------",f.namelist()[0])
+
             return f.namelist()[0]
     else:
         print('This is not zip')
@@ -98,7 +95,7 @@ async def do_insert_audio_api(file: UploadFile=File(...), table_name: str = None
         os.remove(fname_path)
 
         index_client, conn, cursor = audio_init_conn()
-        info = audio_insert_audio(index_client, conn, cursor, table_name, audio_UPLOAD_PATH + "/" + audio_path)
+        info = audio_insert_audio(index_client, conn, cursor, table_name, audio_UPLOAD_PATH)
         return info, 200
     except Exception as e:
         logging.error(e)
