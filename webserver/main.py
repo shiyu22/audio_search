@@ -87,12 +87,12 @@ async def do_insert_audio_api(file: UploadFile=File(...), table_name: str = None
         zip_file = await file.read()
         with open(fname_path,'wb') as f:
             f.write(zip_file)   
-        audio_path = unzip_file(fname_path, UPLOAD_PATH)
+        audio_path = unzip_file(fname_path, audio_UPLOAD_PATH)
         print("fname_path:", fname_path, "audio_path:", audio_path)
         os.remove(fname_path)
 
         index_client, conn, cursor = audio_init_conn()
-        info = audio_insert_audio(index_client, conn, cursor, table_name, UPLOAD_PATH + "/" + audio_path)
+        info = audio_insert_audio(index_client, conn, cursor, table_name, audio_UPLOAD_PATH + "/" + audio_path)
         return info, 200
     except Exception as e:
         logging.error(e)
@@ -103,7 +103,7 @@ async def do_insert_audio_api(file: UploadFile=File(...), table_name: str = None
 async def do_search_audio_api(request: Request, audio: UploadFile = File(...), table_name: str = None):
     try:
         content = await audio.read()
-        filename = UPLOAD_PATH + "/" + audio.filename
+        filename = audio_UPLOAD_PATH + "/" + audio.filename
         with open(filename, "wb") as f:
             f.write(content)
 
