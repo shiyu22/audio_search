@@ -34,6 +34,7 @@ def do_insert_audio(index_client, conn, cursor, table_name, audio_path):
         embeddings = []
         ids_audio = []
         for wav in wavs:
+            print("------------wav:", wav)
             if ".wav" in wav:
                 ids_audio.append(audio_path + '/' + wav)
                 embeddings.append(get_audio_embedding(audio_path + '/' + wav))
