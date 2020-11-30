@@ -85,8 +85,8 @@ async def audio_endpoint(audio: str):
 @app.post('/insertAudio')
 async def do_insert_audio_api(file: UploadFile=File(...), table_name: str = None):
     try:
-    	if not table_name:
-	        table_name = audio_DEFAULT_TABLE
+        if not table_name:
+            table_name = audio_DEFAULT_TABLE
         index_client, conn, cursor = audio_init_conn()
         if table_name in index_client.list_collections():
             print("The audio table has exists! Drop it now.")
