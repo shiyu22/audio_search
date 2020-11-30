@@ -6,9 +6,8 @@ from audio.indexer.logs import write_log
 from audio.encoder.encode import get_audio_embedding
 import os
 import uuid
-import matplotlib.pyplot as plt
-from scipy import signal
-from scipy.io import wavfile
+import wave
+import pylab
 
 
 def init_table(index_client, conn, cursor, table_name):
@@ -27,13 +26,21 @@ def get_ids_file(ids_milvus, ids_audio, file_name):
 
 
 def get_spectorgram(audio_path, wav):
-    sample_rate, samples = wavfile.read(audio_path + '/' + wav)
-    frequencies, times, spectrogram = signal.spectrogram(samples, sample_rate)
-    plt.pcolormesh(times, frequencies, spectrogram)
-    plt.imshow(spectrogram)
-    plt.ylabel('Frequency [Hz]')
-    plt.xlabel('Time [sec]')
-    plt.savefig(audio_path + '/' + wav.replace('.wav', '.jpg'))
+    sound_info, frame_rate = get_wav_info(audio_path, wav)
+    pylab.figure(num=None, figsize=(19, 12))
+    pylab.subplot(111)
+    # pylab.title('spectrogram of %r' % wav_file)
+    pylab.specgram(sound_info, Fs=frame_rate)
+    pylab.savefig(audio_path + '/' + wav.replace('.wav', '.jpg'))
+
+
+def get_wav_info(audio_path, wav):
+    wav = wave.open(audio_path + '/' + wav, 'r')
+    frames = wav.readframes(-1)
+    sound_info = pylab.fromstring(frames, 'int16')
+    frame_rate = wav.getframerate()
+    wav.close()
+    return sound_info, frame_rate
 
 
 def do_insert_audio(index_client, conn, cursor, table_name, audio_path):
