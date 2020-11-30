@@ -1,64 +1,44 @@
-# search_image
+# Audio retrieval system with Milvus
 
-### /addImages
+This project use [PANNs](https://github.com/qiuqiangkong/audioset_tagging_cnn): Large-Scale Pretrained Audio Neural Networks for Audio Pattern Recognition for audio tagging and sound event detection, and finally get audio embeddings. Then [Milvus](https://milvus.io/docs/v0.11.0/overview.md) is used to search the similarity audio items.
 
-- #### methods
+## Local Deployment
 
-```
-POST
-```
+### Requirements
 
-- #### PARAM
+- [Milvus 0.11.0](https://milvus.io/docs/v0.11.0/milvus_docker-cpu.md) (please note the Milvus version)
+- [MySQL](https://hub.docker.com/r/mysql/mysql-server)
+- [Python3](https://www.python.org/downloads/)
 
-| Param | Type | Description    | Examples                            |
-| ----- | ---- | -------------- | ----------------------------------- |
-| Id    | str  | image id array | news1,news2,news3                   |
-| Image | str  | image array    | /data/1.png,/data/2.png,/data/3.png |
+### Run Server
 
+1. Install python requirements
 
+   ```bash
+   $ cd webserver/
+   $ pip install -r audio_requirements.txt
+   ```
 
-### /deleteImages
+2. Modify configuration parameters
 
-- #### methods
+   Before running the script, please modify the parameters in **webserver/audio/common/config.py**:
 
-```
-POST
-```
+   | Parameter    | Description               | Default setting |
+   | ------------ | ------------------------- | --------------- |
+   | MILVUS_HOST  | milvus service ip address | 127.0.0.1       |
+   | MILVUS_PORT  | milvus service port       | 19530           |
+   | MYSQL_HOST   | postgresql service ip     | 127.0.0.1       |
+   | MYSQL_PORT   | postgresql service port   | 3306            |
+   | MYSQL_USER   | postgresql user name      | root            |
+   | MYSQL_PWD    | postgresql password       | 123456          |
+   | MYSQL_DB     | postgresql datebase name  | mysql           |
+   | MILVUS_TABLE | default table name        | milvus_audio    |
 
-- #### PARAM
+3. Star server
 
-| Param | Type | Description | Examples |
-| ----- | ---- | ----------- | -------- |
-| Id    | str  | image id    | news1    |
+   ```bash
+   $ cd webserver
+   $ python main.py
+   ```
 
-
-
-### /getSimilarImages
-
-- #### methods
-
-
-```
-POST
-```
-
-- #### PARAM
-
-
-| Param | Type | Description | Examples    |
-| ----- | ---- | ----------- | ----------- |
-| Id    | str  | image id    | news1       |
-| Image | str  | image       | /data/1.png |
-
-
-
-# Env
-
-| Param            | Description                     | Defaults      |
-| ---------------- | ------------------------------- | ------------- |
-| MILVUS_HOST      | milvus container host           | 127.0.0.1     |
-| MILVUS_PORT      | milvus container port           | 19530         |
-| VECTOR_DIMENSION | default vector dimension number | 512           |
-| METRIC_TYPE      | milvus metrics                  | MetricType.L2 |
-| TOP_K            | num of the most similar vectors | 20            |
-| DEFAULT_TABLE    | default milvus table            | milvus_image  |
+### Run Client

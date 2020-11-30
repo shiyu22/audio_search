@@ -1,12 +1,12 @@
 import os
 import logging
-from audio.service.insert import audio_insert_audio
-from audio.service.search import audio_search_audio
-from audio.service.count import audio_count_table
-from audio.service.delete import audio_delete_table
-from audio.indexer.index import audio_milvus_client
-from audio.indexer.tools import audio_connect_mysql
-from audio.common.config import audio_UPLOAD_PATH
+from audio.service.insert import do_insert_audio as audio_insert_audio
+from audio.service.search import do_search_audio as audio_search_audio
+from audio.service.count import do_count_table as audio_count_table
+from audio.service.delete import do_delete_table as audio_delete_table
+from audio.indexer.index import milvus_client as audio_milvus_client
+from audio.indexer.tools import connect_mysql as audio_connect_mysql
+from audio.common.config import UPLOAD_PATH as audio_UPLOAD_PATH
 import time
 from fastapi import FastAPI
 from fastapi import File
