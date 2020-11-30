@@ -49,7 +49,7 @@ def unzip_file(zip_src, dst_dir):
 
 
 @app.get('/countTable')
-async def do_count_images_api(table_name: str = None):
+async def do_count_table_api(table_name: str = None):
     try:
         index_client, conn, cursor = audio_init_conn()
         rows_milvus, rows_mysql = audio_count_table(index_client, conn, cursor, table_name)
