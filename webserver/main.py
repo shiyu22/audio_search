@@ -56,10 +56,10 @@ async def do_count_table_api(table_name: str = None):
     try:
         index_client, conn, cursor = audio_init_conn()
         rows_milvus, rows_mysql = audio_count_table(index_client, conn, cursor, table_name)
-        return "{0},{1}".format(rows_milvus, rows_mysql), 200
+        return {'status': True, 'msg': {'rows_milvus': rows_milvus, 'rows_mysql': rows_mysql}}, 200
     except Exception as e:
         logging.error(e)
-        return "Error with {}".format(e), 400
+        return {'status': False, 'msg':e}, 400
 
 
 @app.delete('/deleteTable')
@@ -67,10 +67,10 @@ async def do_delete_table_api(table_name: str = None):
     try:
         index_client, conn, cursor = audio_init_conn()
         status = audio_delete_table(index_client, conn, cursor, table_name)
-        return "{}".format(status)
+        return {'status': True, 'msg': status}, 200
     except Exception as e:
         logging.error(e)
-        return "Error with {}".format(e), 400
+        return {'status': False, 'msg':e}, 400
 
 
 @app.get('/getAudio')
@@ -80,7 +80,7 @@ async def audio_endpoint(audio: str):
         return FileResponse(audio)
     except Exception as e:
         logging.error(e)
-        return None, 200
+        return {'status': False, 'msg':e}, 400
 
 
 @app.get('/getSpectrogram')
@@ -90,15 +90,19 @@ async def audio_endpoint(image: str):
         return FileResponse(audio)
     except Exception as e:
         logging.error(e)
-        return None, 200
-
+        return {'status': False, 'msg':e}, 400
 
 
 @app.post('/insertAudio')
-async def do_insert_audio_api(file: UploadFile=File(...), table_name: str = None):
+async def do_insert_audio_api(file: bytes = File(...), table_name: str = None):
     try:
         if not table_name:
             table_name = audio_DEFAULT_TABLE
+        if len(file) > 50 * 1024 * 1024:
+            status = False
+            message = "The uploaded file size cannot exceed 10 MB."
+            return {'status': status, 'msg':message}
+
         index_client, conn, cursor = audio_init_conn()
         if table_name in index_client.list_collections():
             print("The audio table has exists! Drop it now.")
@@ -108,22 +112,21 @@ async def do_insert_audio_api(file: UploadFile=File(...), table_name: str = None
             print(status)
 
         os.makedirs(audio_UPLOAD_PATH + "/" + table_name)
-        fname_path = audio_UPLOAD_PATH + "/" + table_name + "/" + file.filename
-        zip_file = await file.read()
+        fname_path = audio_UPLOAD_PATH + "/" + table_name + "/" + "demo_audio.zip"
+        # zip_file = await file.read()
         with open(fname_path,'wb') as f:
-            f.write(zip_file)
+            f.write(file)
         print("fname_path:", fname_path)
 
         audio_path = unzip_file(fname_path, audio_UPLOAD_PATH + "/" + table_name)
         print("fname_path:", fname_path, "audio_path:", audio_path)
         os.remove(fname_path)
 
-        
         info = audio_insert_audio(index_client, conn, cursor, table_name, audio_UPLOAD_PATH + "/" + table_name)
-        return info, 200
+        return {'status': True, 'msg': info}, 200
     except Exception as e:
         logging.error(e)
-        return "Error with {}".format(e), 400
+        return {'status': False, 'msg':e}, 400
 
 
 @app.post('/searchAudio')
@@ -139,7 +142,6 @@ async def do_search_audio_api(request: Request, audio: UploadFile = File(...), t
         milvus_ids, milvus_distance, audio_ids = audio_search_audio(index_client, conn, cursor, table_name, filename)
         
         print(milvus_ids, '-----', milvus_distance, '--------', audio_ids)
-        result_dic = {"code": 0, "msg": "success"}
         results = []
         for i in range(len(milvus_ids)):
             re = {
@@ -149,11 +151,10 @@ async def do_search_audio_api(request: Request, audio: UploadFile = File(...), t
                 "spectrogram": "http://" + str(host) + "/getSpectrogram?image=" + str(audio_ids[i]).replace('.wav', '.jpg')
             }
             results.append(re)
-        result_dic["data"] = results
-        return result_dic, 200
+        return {'status': True, 'msg': result_dic}, 200
     except Exception as e:
         logging.error(e)
-        return "Error with {}".format(e), 400
+        return {'status': False, 'msg':e}, 400
 
 
 
