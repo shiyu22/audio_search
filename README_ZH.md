@@ -1,27 +1,27 @@
-# Audio retrieval system with Milvus
+# 基于Milvus 的音频检索系统
 
-This project use [PANNs](https://github.com/qiuqiangkong/audioset_tagging_cnn): Large-Scale Pretrained Audio Neural Networks for Audio Pattern Recognition for audio tagging and sound event detection, and finally get audio embeddings. Then [Milvus](https://milvus.io/docs/v0.11.0/overview.md) is used to search the similarity audio items.
+该项目使用 [PANNs](https://github.com/qiuqiangkong/audioset_tagging_cnn) 对音频做 Embeddings 提取，然后利用 Milvus 检索出相似的音频数据。 
 
-## Local Deployment
+## 系统部署
 
-### Requirements
+### 环境要求
 
-- [Milvus 0.11.0](https://milvus.io/docs/v0.11.0/milvus_docker-cpu.md) (please note the Milvus version)
+- [Milvus 0.11.0](https://milvus.io/docs/v0.11.0/milvus_docker-cpu.md) (请注意 Milvus 的版本)
 - [MySQL](https://hub.docker.com/r/mysql/mysql-server)
 - [Python3](https://www.python.org/downloads/)
 
-### Run Server
+### 启动系统服务
 
-1. **Install python requirements**
+1. **安装 python依赖**
 
    ```bash
    $ cd webserver/
    $ pip install -r audio_requirements.txt
    ```
 
-2. **Modify configuration parameters**
+2. **修改配置参数**
 
-   Before running the script, please modify the parameters in **webserver/audio/common/config.py**:
+   再运行代码强，请修改该文件中的相关配置：**webserver/audio/common/config.py**:
 
    | Parameter    | Description               | Default setting |
    | ------------ | ------------------------- | --------------- |
@@ -34,13 +34,15 @@ This project use [PANNs](https://github.com/qiuqiangkong/audioset_tagging_cnn): 
    | MYSQL_DB     | postgresql datebase name  | mysql           |
    | MILVUS_TABLE | default table name        | milvus_audio    |
 
-3. **Star server**
+3. **启动服务**
 
    ```bash
    $ cd webserver
    $ python main.py
    ```
 
-### Run Client
+### 启动 UI 客户端
 
-## System Usage
+
+
+## 系统展示
