@@ -21,6 +21,7 @@ import uuid
 from starlette.middleware.cors import CORSMiddleware
 
 
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -75,11 +76,22 @@ async def do_delete_table_api(table_name: str = None):
 @app.get('/getAudio')
 async def audio_endpoint(audio: str):
     try:
+        print("load audio:", audio)
+        return FileResponse(audio)
+    except Exception as e:
+        logging.error(e)
+        return None, 200
+
+
+@app.get('/getSpectrogram')
+async def audio_endpoint(image: str):
+    try:
         print("load img:", audio)
         return FileResponse(audio)
     except Exception as e:
         logging.error(e)
         return None, 200
+
 
 
 @app.post('/insertAudio')
@@ -126,13 +138,15 @@ async def do_search_audio_api(request: Request, audio: UploadFile = File(...), t
         host = request.headers['host']
         milvus_ids, milvus_distance, audio_ids = audio_search_audio(index_client, conn, cursor, table_name, filename)
         
+        print(milvus_ids, '-----', milvus_distance, '--------', audio_ids)
         result_dic = {"code": 0, "msg": "success"}
         results = []
         for i in range(len(milvus_ids)):
             re = {
                 "id": milvus_ids[i],
                 "distance": milvus_distance[i],
-                "audio": "http://" + str(host) + "/getAudio?audio=" + audio_UPLOAD_PATH + "/" + table_name + "/" + audio_ids[i]
+                "audio": "http://" + str(host) + "/getAudio?audio=" + str(audio_ids[i])
+                "spectrogram": "http://" + str(host) + "/getSpectrogram?image=" + str(audio_ids[i]).replace('.wav', '.jpg')
             }
             results.append(re)
         result_dic["data"] = results

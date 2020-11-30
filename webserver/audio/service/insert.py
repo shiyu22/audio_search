@@ -6,6 +6,9 @@ from audio.indexer.logs import write_log
 from audio.encoder.encode import get_audio_embedding
 import os
 import uuid
+import matplotlib.pyplot as plt
+from scipy import signal
+from scipy.io import wavfile
 
 
 def init_table(index_client, conn, cursor, table_name):
@@ -23,6 +26,15 @@ def get_ids_file(ids_milvus, ids_audio, file_name):
             f.write(line)
 
 
+def get_spectorgram(audio_path, wav):
+    sample_rate, samples = wavfile.read(audio_path + '/' + wav)
+    frequencies, times, spectrogram = signal.spectrogram(samples, sample_rate)
+    plt.pcolormesh(times, frequencies, spectrogram)
+    plt.imshow(spectrogram)
+    plt.ylabel('Frequency [Hz]')
+    plt.xlabel('Time [sec]')
+    plt.savefig(audio_path + '/' + wav.replace('.wav', '.jpg'))
+
 def do_insert_audio(index_client, conn, cursor, table_name, audio_path):
     
     try:
@@ -35,6 +47,7 @@ def do_insert_audio(index_client, conn, cursor, table_name, audio_path):
             print("------------wav:", wav)
             if ".wav" in wav:
                 ids_audio.append(audio_path + '/' + wav)
+                get_spectorgram(audio_path, wav)
                 embeddings.append(get_audio_embedding(audio_path + '/' + wav))
                 print("len--------", len(embeddings))
         ids_milvus = insert_vectors(index_client, table_name, embeddings)
