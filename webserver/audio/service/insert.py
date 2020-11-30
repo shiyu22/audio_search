@@ -38,6 +38,7 @@ def do_insert_audio(index_client, conn, cursor, table_name, audio_path):
             if ".wav" in wav:
                 ids_audio.append(audio_path + '/' + wav)
                 embeddings.append(get_audio_embedding(audio_path + '/' + wav))
+                print("len--------", len(embeddings))
         ids_milvus = insert_vectors(index_client, table_name, embeddings)
         
         file_name = str(uuid.uuid1()) + ".csv"

@@ -84,18 +84,27 @@ async def audio_endpoint(audio: str):
 @app.post('/insertAudio')
 async def do_insert_audio_api(file: UploadFile=File(...), table_name: str = None):
     try:
-        fname_path = audio_UPLOAD_PATH + "/" + file.filename
+        index_client, conn, cursor = audio_init_conn()
+        if table_name in index_client.list_collections():
+            print("The audio table has exists! Drop it now.")
+            status = audio_delete_table(index_client, conn, cursor, table_name)
+            if os.path.exists(audio_UPLOAD_PATH + "/" + table_name):
+                os.remove(audio_UPLOAD_PATH + "/" + table_name)
+            print(status)
+
+        os.makedirs(audio_UPLOAD_PATH + "/" + table_name)
+        fname_path = audio_UPLOAD_PATH + "/" + table_name + "/" + file.filename
         zip_file = await file.read()
         with open(fname_path,'wb') as f:
             f.write(zip_file)
         print("fname_path:", fname_path)
 
-        audio_path = unzip_file(fname_path, audio_UPLOAD_PATH)
+        audio_path = unzip_file(fname_path, audio_UPLOAD_PATH + "/" + table_name)
         print("fname_path:", fname_path, "audio_path:", audio_path)
         os.remove(fname_path)
 
-        index_client, conn, cursor = audio_init_conn()
-        info = audio_insert_audio(index_client, conn, cursor, table_name, audio_UPLOAD_PATH)
+        
+        info = audio_insert_audio(index_client, conn, cursor, table_name, audio_UPLOAD_PATH + "/" + table_name)
         return info, 200
     except Exception as e:
         logging.error(e)
@@ -120,7 +129,7 @@ async def do_search_audio_api(request: Request, audio: UploadFile = File(...), t
             re = {
                 "id": milvus_ids[i],
                 "distance": milvus_distance[i],
-                "audio": "http://" + str(host) + "/getAudio?audio=" + audio_ids[i]
+                "audio": "http://" + str(host) + "/getAudio?audio=" + audio_UPLOAD_PATH + "/" + table_name + "/" + audio_ids[i]
             }
             results.append(re)
         result_dic["data"] = results
