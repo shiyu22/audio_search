@@ -19,7 +19,7 @@ import zipfile
 from pathlib import Path
 import uuid
 from starlette.middleware.cors import CORSMiddleware
-
+import shutil
 
 
 app = FastAPI()
@@ -108,7 +108,8 @@ async def do_insert_audio_api(file: bytes = File(...), table_name: str = None):
             print("The audio table has exists! Drop it now.")
             status = audio_delete_table(index_client, conn, cursor, table_name)
             if os.path.exists(audio_UPLOAD_PATH + "/" + table_name):
-                os.remove(audio_UPLOAD_PATH + "/" + table_name)
+                # os.remove(audio_UPLOAD_PATH + "/" + table_name)
+                shutil.rmtree(audio_UPLOAD_PATH + "/" + table_name)
             print(status)
 
         os.makedirs(audio_UPLOAD_PATH + "/" + table_name)
