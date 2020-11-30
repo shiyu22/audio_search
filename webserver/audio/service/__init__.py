@@ -1,4 +1,4 @@
-from indexer.logs import write_log
+from audio.indexer.logs import write_log
 
 write_log("Start app service.")
 
