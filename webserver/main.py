@@ -39,12 +39,13 @@ def audio_init_conn():
 def unzip_file(zip_src, dst_dir):
     r = zipfile.is_zipfile(zip_src)
     if r:
-        with zipfile.ZipFile(zip_src, 'r') as f:
+        with zipfile.ZipFile(zip_src, 'rw', encoding="utf-8") as f:
             for fn in f.namelist():
                 extracted_path = Path(f.extract(fn, dst_dir))
                 extracted_path.rename(dst_dir +'/' + fn.encode('cp437').decode('gbk'))
             return f.namelist()[0].encode('cp437').decode('gbk')
     else:
+    	print('This is not zip')
         return 'This is not zip'
 
 
@@ -86,7 +87,9 @@ async def do_insert_audio_api(file: UploadFile=File(...), table_name: str = None
         fname_path = audio_UPLOAD_PATH + "/" + file.filename
         zip_file = await file.read()
         with open(fname_path,'wb') as f:
-            f.write(zip_file)   
+            f.write(zip_file)
+        print("fname_path:", fname_path)
+
         audio_path = unzip_file(fname_path, audio_UPLOAD_PATH)
         print("fname_path:", fname_path, "audio_path:", audio_path)
         os.remove(fname_path)
@@ -129,4 +132,4 @@ async def do_search_audio_api(request: Request, audio: UploadFile = File(...), t
 
 
 if __name__ == '__main__':
-    uvicorn.run(app=app, host='192.168.1.85', port=8002)
+    uvicorn.run(app=app, host='0.0.0.0', port=8002)
