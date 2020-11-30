@@ -152,7 +152,7 @@ async def do_search_audio_api(request: Request, audio: UploadFile = File(...), t
                 "spectrogram": "http://" + str(host) + "/getSpectrogram?image=" + str(audio_ids[i]).replace('.wav', '.jpg')
             }
             results.append(re)
-        return {'status': True, 'msg': result_dic}, 200
+        return {'status': True, 'msg': results}, 200
     except Exception as e:
         logging.error(e)
         return {'status': False, 'msg':e}, 400
