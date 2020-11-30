@@ -7,6 +7,7 @@ from audio.service.delete import do_delete_table as audio_delete_table
 from audio.indexer.index import milvus_client as audio_milvus_client
 from audio.indexer.tools import connect_mysql as audio_connect_mysql
 from audio.common.config import UPLOAD_PATH as audio_UPLOAD_PATH
+from audio.common.config import DEFAULT_TABLE as audio_DEFAULT_TABLE
 import time
 from fastapi import FastAPI
 from fastapi import File
@@ -84,6 +85,8 @@ async def audio_endpoint(audio: str):
 @app.post('/insertAudio')
 async def do_insert_audio_api(file: UploadFile=File(...), table_name: str = None):
     try:
+    	if not table_name:
+	        table_name = audio_DEFAULT_TABLE
         index_client, conn, cursor = audio_init_conn()
         if table_name in index_client.list_collections():
             print("The audio table has exists! Drop it now.")

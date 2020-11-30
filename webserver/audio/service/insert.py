@@ -24,8 +24,6 @@ def get_ids_file(ids_milvus, ids_audio, file_name):
 
 
 def do_insert_audio(index_client, conn, cursor, table_name, audio_path):
-    if not table_name:
-        table_name = DEFAULT_TABLE
     
     try:
         init_table(index_client, conn, cursor, table_name)
