@@ -35,6 +35,7 @@ def get_spectorgram(audio_path, wav):
     plt.xlabel('Time [sec]')
     plt.savefig(audio_path + '/' + wav.replace('.wav', '.jpg'))
 
+
 def do_insert_audio(index_client, conn, cursor, table_name, audio_path):
     
     try:
