@@ -51,8 +51,8 @@ def unzip_file(zip_src, dst_dir):
         return 'This is not zip'
 
 
-@app.get('/countTable')
-async def do_count_table_api(table_name: str = None):
+@app.get('audio/count')
+async def audio_count_table_api(table_name: str = None):
     try:
         index_client, conn, cursor = audio_init_conn()
         rows_milvus, rows_mysql = audio_count_table(index_client, conn, cursor, table_name)
@@ -62,15 +62,15 @@ async def do_count_table_api(table_name: str = None):
         return {'status': False, 'msg':e}, 400
 
 
-@app.delete('/deleteTable')
-async def do_delete_table_api(table_name: str = None):
-    try:
-        index_client, conn, cursor = audio_init_conn()
-        status = audio_delete_table(index_client, conn, cursor, table_name)
-        return {'status': True, 'msg': status}, 200
-    except Exception as e:
-        logging.error(e)
-        return {'status': False, 'msg':e}, 400
+# @app.delete('audio/delete')
+# async def audio_delete_table_api(table_name: str = None):
+#     try:
+#         index_client, conn, cursor = audio_init_conn()
+#         status = audio_delete_table(index_client, conn, cursor, table_name)
+#         return {'status': True, 'msg': status}, 200
+#     except Exception as e:
+#         logging.error(e)
+#         return {'status': False, 'msg':e}, 400
 
 
 @app.get('/getAudio')
@@ -93,7 +93,7 @@ async def spectrogram_endpoint(image: str):
         return {'status': False, 'msg':e}, 400
 
 
-@app.post('/insertAudio')
+@app.post('audio/insert')
 async def do_insert_audio_api(file: bytes = File(...), table_name: str = None):
     try:
         if not table_name:
@@ -130,7 +130,7 @@ async def do_insert_audio_api(file: bytes = File(...), table_name: str = None):
         return {'status': False, 'msg':e}, 400
 
 
-@app.post('/searchAudio')
+@app.post('audio/search')
 async def do_search_audio_api(request: Request, audio: UploadFile = File(...), table_name: str = None):
     try:
         content = await audio.read()

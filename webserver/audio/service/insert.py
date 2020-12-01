@@ -26,12 +26,16 @@ def get_ids_file(ids_milvus, ids_audio, file_name):
 
 
 def get_spectorgram(audio_path, wav):
-    sound_info, frame_rate = get_wav_info(audio_path, wav)
-    pylab.figure(num=None, figsize=(19, 12))
-    pylab.subplot(111)
-    # pylab.title('spectrogram of %r' % wav_file)
-    pylab.specgram(sound_info, Fs=frame_rate)
-    pylab.savefig(audio_path + '/' + wav.replace('.wav', '.jpg'))
+    try:
+        sound_info, frame_rate = get_wav_info(audio_path, wav)
+        pylab.figure(num=None, figsize=(19, 12))
+        pylab.subplot(111)
+        # pylab.title('spectrogram of %r' % wav_file)
+        pylab.specgram(sound_info, Fs=frame_rate)
+        pylab.savefig(audio_path + '/' + wav.replace('.wav', '.jpg'))
+    except Exception as e:
+        write_log(e, 1)
+        print("Error with", e)
 
 
 def get_wav_info(audio_path, wav):
