@@ -57,10 +57,12 @@ def do_insert_audio(index_client, conn, cursor, table_name, audio_path):
         ids_audio = []
         for wav in wavs:
             print("------------wav:", wav)
-            if ".wav" in wav:
-                ids_audio.append(audio_path + '/' + wav)
-                get_spectorgram(audio_path, wav)
-                embeddings.append(get_audio_embedding(audio_path + '/' + wav))
+            if ".wav" in wav: 
+                ids_wav, vectors_wav = get_audio_embedding(audio_path + '/' + wav)
+                if vectors_wav:
+                    get_spectorgram(audio_path, wav)
+                    embeddings.append(vectors_wav)
+                    ids_audio.append(ids_wav)
                 print("len--------", len(embeddings))
         ids_milvus = insert_vectors(index_client, table_name, embeddings)
         
@@ -71,6 +73,5 @@ def do_insert_audio(index_client, conn, cursor, table_name, audio_path):
 
         return "insert successfully!"
     except Exception as e:
-        # log.error(e)
         write_log(e, 1)
         return "Error with {}".format(e)
