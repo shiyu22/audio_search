@@ -21,7 +21,6 @@ import uuid
 from starlette.middleware.cors import CORSMiddleware
 import shutil
 
-
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -87,7 +86,7 @@ async def do_insert_audio_api(file: bytes = File(...), table_name: str = None):
     try:
         if not table_name:
             table_name = audio_DEFAULT_TABLE
-        if len(file) > 50 * 1024 * 1024:
+        if len(file) > 20 * 1024 * 1024:
             status = False
             message = "The uploaded file size cannot exceed 10 MB."
             return {'status': status, 'msg':message}
@@ -97,19 +96,15 @@ async def do_insert_audio_api(file: bytes = File(...), table_name: str = None):
             print("The audio table has exists! Drop it now.")
             status = audio_delete_table(index_client, conn, cursor, table_name)
             if os.path.exists(audio_UPLOAD_PATH + "/" + table_name):
-                # os.remove(audio_UPLOAD_PATH + "/" + table_name)
                 shutil.rmtree(audio_UPLOAD_PATH + "/" + table_name)
             print(status)
 
         os.makedirs(audio_UPLOAD_PATH + "/" + table_name)
         fname_path = audio_UPLOAD_PATH + "/" + table_name + "/" + "demo_audio.zip"
-        # zip_file = await file.read()
         with open(fname_path,'wb') as f:
             f.write(file)
-        print("fname_path:", fname_path)
 
         audio_path = unzip_file(fname_path, audio_UPLOAD_PATH + "/" + table_name)
-        print("fname_path:", fname_path, "audio_path:", audio_path)
         os.remove(fname_path)
 
         info = audio_insert_audio(index_client, conn, cursor, table_name, audio_UPLOAD_PATH + "/" + table_name)
@@ -131,7 +126,6 @@ async def do_search_audio_api(request: Request, audio: UploadFile = File(...), t
         host = request.headers['host']
         milvus_ids, milvus_distance, audio_ids = audio_search_audio(index_client, conn, cursor, table_name, filename)
         
-        print(milvus_ids, '-----', milvus_distance, '--------', audio_ids)
         results = []
         for i in range(len(milvus_ids)):
             re = {

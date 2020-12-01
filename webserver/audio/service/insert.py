@@ -56,14 +56,14 @@ def do_insert_audio(index_client, conn, cursor, table_name, audio_path):
         embeddings = []
         ids_audio = []
         for wav in wavs:
-            print("------------wav:", wav)
+            # print("---wav:", wav)
             if ".wav" in wav: 
                 ids_wav, vectors_wav = get_audio_embedding(audio_path + '/' + wav)
                 if vectors_wav:
                     get_spectorgram(audio_path, wav)
                     embeddings.append(vectors_wav)
                     ids_audio.append(ids_wav)
-                print("len--------", len(embeddings))
+                # print("len of embeddings", len(embeddings))
         ids_milvus = insert_vectors(index_client, table_name, embeddings)
         
         file_name = str(uuid.uuid1()) + ".csv"

@@ -29,7 +29,7 @@ def search_by_milvus_ids(conn, cursor, ids, table_name):
     str_ids = str(ids)
     str_ids = str(str_ids).replace('[','').replace(']','')
     sql = "select audio_id from " + table_name + " where milvus_id in (" + str_ids + ") order by field (milvus_id," + str_ids + ");"
-    print(sql)
+    # print(sql)
     try:
         cursor.execute(sql)
         results = cursor.fetchall()
