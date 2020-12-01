@@ -10,7 +10,7 @@ def do_search_audio(index_client, conn, cursor, table_name, filename):
     if not table_name:
         table_name = DEFAULT_TABLE
 
-    vectors_audio = get_audio_embedding(filename)
+    _, vectors_audio = get_audio_embedding(filename)
     # print(vectors_audio)
 
     results = search_vectors(index_client, table_name, [vectors_audio], METRIC_TYPE, TOP_K)
