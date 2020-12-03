@@ -86,18 +86,8 @@ async def do_insert_audio_api(file: bytes = File(...), table_name: str = None):
     try:
         if not table_name:
             table_name = audio_DEFAULT_TABLE
-        if len(file) > 20 * 1024 * 1024:
-            status = False
-            message = "The uploaded file size cannot exceed 10 MB."
-            return {'status': status, 'msg':message}
 
         index_client, conn, cursor = audio_init_conn()
-        if table_name in index_client.list_collections():
-            print("The audio table has exists! Drop it now.")
-            status = audio_delete_table(index_client, conn, cursor, table_name)
-            if os.path.exists(audio_UPLOAD_PATH + "/" + table_name):
-                shutil.rmtree(audio_UPLOAD_PATH + "/" + table_name)
-            print(status)
 
         os.makedirs(audio_UPLOAD_PATH + "/" + table_name)
         fname_path = audio_UPLOAD_PATH + "/" + table_name + "/" + "demo_audio.zip"

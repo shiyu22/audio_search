@@ -41,6 +41,18 @@ This project use [PANNs](https://github.com/qiuqiangkong/audioset_tagging_cnn): 
    $ python main.py
    ```
 
-### Run Client
-
 ## System Usage
+
+You can type `127.0.0.1:8002/docs` into your browser to see all the APIs.
+
+- Insert data.
+
+  You can download the sample [game_sound.zip]( and insert it into the system.
+
+  > The sound data in the zip archive is required to be in wav format.
+
+  
+
+- Search audio.
+
+  You can pass in [test.wav]( to find the result that is most similar to that sound.
