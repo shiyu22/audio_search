@@ -47,14 +47,20 @@
 
 在浏览器输入 `127.0.0.1:8002/docs` 就可以看到系统中所有的 API 。
 
+![](./pic/all_API.png)
+
 - 插入数据
 
   你可以下载示例数据 [game_sound.zip]( 并导入系统。
 
   > 注意：要求压缩包文件中的声音都是 wav 格式。
 
-  
+  ![](./pic/insert.png)
 
 - 声音查询
 
   导入 [test.wav]( 在系统中查询与该声音最相似的结果。
+  
+  ![](./pic/search.png)
+
+> 如果你需要前端界面，请参考https://zilliz.com/demos/
